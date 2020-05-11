@@ -3,6 +3,8 @@ use clap::{App, Arg};
 const ARG_COMMAND_GENERATE: &str = "generate";
 const ARG_INPUT: &str = "input";
 const ARG_OUTPUT: &str = "output";
+const ARG_COUNT: &str = "count";
+const DEFAULT_COUNT: &str = "10";
 
 fn main() {
     let args = App::new(clap::crate_name!())
@@ -33,6 +35,14 @@ fn main() {
                 .takes_value(true)
                 .required(false),
         )
+        .arg(
+            Arg::with_name(ARG_COUNT)
+                .short("c")
+                .long(ARG_COUNT)
+                .help("Number of questions")
+                .default_value(DEFAULT_COUNT)
+                .validator(quest::is_valid_count),
+        )
         .get_matches();
 
     if args.is_present(ARG_COMMAND_GENERATE) {
@@ -42,7 +52,11 @@ fn main() {
             args.value_of(ARG_OUTPUT).unwrap(),
         );
     } else {
+        // number of questions
+        let count = args.value_of(ARG_COUNT).unwrap();
+        let count = count.parse().unwrap();
+
         // ask a quiz
-        quest::ask_quiz(args.value_of(ARG_INPUT).unwrap());
+        quest::ask_quiz(args.value_of(ARG_INPUT).unwrap(), count);
     }
 }
