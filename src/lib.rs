@@ -65,9 +65,12 @@ fn write_to_csv_file(countries: &Vec<Country>, path: &str) -> Result<(), Box<dyn
 pub fn ask_quiz(input_path: &str) {
     println!("Asking quiz using {}", input_path);
     let result = read_from_csv_file(input_path);
+    let countries = result.unwrap();
+
+    let _result = pop_quiz(&countries);
 }
 
-fn read_from_csv_file(path: &str) -> Result<(), Box<dyn Error>> {
+fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
     let file = File::open(Path::new(path))?;
     let buf_reader = BufReader::new(file);
     let mut reader = ReaderBuilder::new().delimiter(b'|').from_reader(buf_reader);
@@ -76,6 +79,10 @@ fn read_from_csv_file(path: &str) -> Result<(), Box<dyn Error>> {
         let record: Country = result?;
         countries.push(record);
     }
+    Ok(countries)
+}
+
+fn pop_quiz(countries: &Vec<Country>) -> Result<(), Box<dyn Error>> {
     let mut rng = rand::thread_rng();
     let q_index = rng.gen_range(0, countries.len());
     println!("Got question index: {}", q_index);
@@ -91,9 +98,9 @@ fn read_from_csv_file(path: &str) -> Result<(), Box<dyn Error>> {
         println!("{}. {}", pos + 1, elem.name);
     }
     let mut input = String::new();
-    io::stdin().read_line(&mut input);
+    let _result = io::stdin().read_line(&mut input);
     let input: usize = input.trim().parse().unwrap_or(0);
-    println!("Got answer: {:#?}", input);
+    //println!("Got answer: {:#?}", input);
     if input >= 1 && input <= 4 && selection.name == options[input - 1].name {
         println!(
             "Your answer #{} is correct. Correct answer is {}",
