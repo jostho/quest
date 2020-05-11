@@ -29,7 +29,7 @@ pub fn is_valid_file(val: String) -> Result<(), String> {
     if Path::new(&val).exists() {
         Ok(())
     } else {
-        Err(format!("File does not exist"))
+        Err("File does not exist".to_string())
     }
 }
 
@@ -53,7 +53,7 @@ fn read_from_json_file(path: &str) -> Result<Iso31661, Box<dyn Error>> {
     Ok(iso_3166_1)
 }
 
-fn write_to_csv_file(countries: &Vec<Country>, path: &str) -> Result<(), Box<dyn Error>> {
+fn write_to_csv_file(countries: &[Country], path: &str) -> Result<(), Box<dyn Error>> {
     let mut writer = WriterBuilder::new().delimiter(b'|').from_path(path)?;
     for country in countries {
         writer.serialize(country)?;
@@ -82,7 +82,7 @@ fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
     Ok(countries)
 }
 
-fn pop_quiz(countries: &Vec<Country>) -> Result<(), Box<dyn Error>> {
+fn pop_quiz(countries: &[Country]) -> Result<(), Box<dyn Error>> {
     let mut rng = rand::thread_rng();
     let q_index = rng.gen_range(0, countries.len());
     println!("Got question index: {}", q_index);
