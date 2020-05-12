@@ -4,6 +4,7 @@ const ARG_COMMAND_GENERATE: &str = "generate";
 const ARG_INPUT: &str = "input";
 const ARG_OUTPUT: &str = "output";
 const ARG_COUNT: &str = "count";
+const DEFAULT_OUTPUT: &str = "output.csv";
 const DEFAULT_COUNT: &str = "10";
 
 fn main() {
@@ -33,7 +34,7 @@ fn main() {
                 .long(ARG_OUTPUT)
                 .help("Output file path")
                 .takes_value(true)
-                .required(false),
+                .default_value(DEFAULT_OUTPUT),
         )
         .arg(
             Arg::with_name(ARG_COUNT)
