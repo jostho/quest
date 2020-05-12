@@ -49,16 +49,16 @@ pub fn is_valid_count(val: String) -> Result<(), String> {
 }
 
 pub fn generate_content(input_path: &str, output_path: &str) {
-    println!(
-        "Generating content from {} into {}",
-        input_path, output_path
-    );
     // read a json
     let result = read_from_json_file(input_path);
     let iso_3166_1 = result.unwrap();
 
     // write to csv
     let _result = write_to_csv_file(&iso_3166_1.countries, output_path);
+    println!(
+        "Generating content from {} into {}",
+        input_path, output_path
+    );
 }
 
 fn read_from_json_file(path: &str) -> Result<Iso31661, Box<dyn Error>> {
