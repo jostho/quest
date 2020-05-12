@@ -8,6 +8,7 @@ use std::fs::File;
 use std::io;
 use std::io::BufReader;
 use std::path::Path;
+use std::process;
 
 const MAX_COUNT: u8 = 100;
 
@@ -78,11 +79,16 @@ fn write_to_csv_file(countries: &[Country], path: &str) -> Result<(), Box<dyn Er
 }
 
 pub fn ask_quiz(input_path: &str, count: u8) {
-    println!("Asking quiz using {}", input_path);
     let result = read_from_csv_file(input_path);
     let countries = result.unwrap();
 
-    let _result = pop_quiz(&countries, count);
+    if countries.len() > count as usize {
+        println!("Asking quiz using {}", input_path);
+        let _result = pop_quiz(&countries, count);
+    } else {
+        eprintln!("Input file has fewer rows than number of questions");
+        process::exit(2);
+    }
 }
 
 fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
