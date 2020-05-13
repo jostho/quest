@@ -83,11 +83,11 @@ pub fn ask_quiz(input_path: &str, count: u8) {
     let result = read_from_csv_file(input_path);
     let countries = result.unwrap();
 
-    if countries.len() > count as usize {
+    if countries.len() > count as usize && countries.len() > NUMBER_OF_OPTIONS as usize {
         println!("Asking quiz using {}", input_path);
         let _result = pop_quiz(&countries, count);
     } else {
-        eprintln!("Input file has fewer rows than number of questions");
+        eprintln!("Input file has fewer rows than number of questions/options");
         process::exit(2);
     }
 }
