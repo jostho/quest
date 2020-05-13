@@ -11,6 +11,7 @@ use std::path::Path;
 use std::process;
 
 const MAX_COUNT: u8 = 100;
+const NUMBER_OF_OPTIONS: u8 = 4;
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Iso31661 {
@@ -118,7 +119,9 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             selection.alpha_2
         );
         println!("Options:");
-        let mut options: Vec<&Country> = countries.choose_multiple(&mut rng, 3).collect();
+        let mut options: Vec<&Country> = countries
+            .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
+            .collect();
         options.push(selection);
         options.shuffle(&mut rng);
         //println!("Got options: {:#?}", options);
@@ -127,9 +130,12 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
         }
         let mut input = String::new();
         let _result = io::stdin().read_line(&mut input);
-        let input: usize = input.trim().parse().unwrap_or(0);
+        let input: u8 = input.trim().parse().unwrap_or(0);
         //println!("Got answer: {:#?}", input);
-        if input >= 1 && input <= 4 && selection.name == options[input - 1].name {
+        if input >= 1
+            && input <= NUMBER_OF_OPTIONS
+            && selection.name == options[input as usize - 1].name
+        {
             println!(
                 "Your answer #{} is correct. Correct answer is {}",
                 input, selection.name
