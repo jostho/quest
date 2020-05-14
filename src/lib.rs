@@ -29,6 +29,12 @@ struct Country {
     official_name: String,
 }
 
+impl PartialEq for Country {
+    fn eq(&self, other: &Self) -> bool {
+        self.numeric == other.numeric
+    }
+}
+
 pub fn is_valid_file(val: String) -> Result<(), String> {
     if Path::new(&val).exists() {
         Ok(())
@@ -106,24 +112,31 @@ fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
 
 fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
     let mut rng = rand::thread_rng();
+    let mut q_count = 0;
     let mut correct_answer_count = 0;
-    for index in 0..count {
+    let mut done = false;
+
+    while !done {
         let q_index = rng.gen_range(0, countries.len());
         //println!("Got question index: {}", q_index);
         let selection = &countries[q_index];
         //println!("Got country: {:#?}", selection);
-        println!(
-            "Question {}/{}: which country's code is {} ?",
-            index + 1,
-            count,
-            selection.alpha_2
-        );
-        println!("Options:");
         let mut options: Vec<&Country> = countries
             .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
             .collect();
+        // check if the options already has the selected answer
+        if options.contains(&selection) {
+            // skip, retry with another question
+            continue;
+        }
         options.push(selection);
         options.shuffle(&mut rng);
+        q_count += 1;
+        println!(
+            "Question {}/{}: which country's code is {} ?",
+            q_count, count, selection.alpha_2
+        );
+        println!("Options:");
         //println!("Got options: {:#?}", options);
         for (pos, elem) in options.iter().enumerate() {
             println!("{}. {}", pos + 1, elem.name);
@@ -146,6 +159,9 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
                 "Your answer #{} is wrong. Correct answer is {}",
                 input, selection.name
             );
+        }
+        if q_count == count {
+            done = true;
         }
     }
     println!("Final score: {}/{}", correct_answer_count, count);
