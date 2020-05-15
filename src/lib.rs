@@ -10,7 +10,7 @@ use std::io::BufReader;
 use std::path::Path;
 use std::process;
 
-const MAX_COUNT: u8 = 100;
+const MAX_COUNT: u8 = 100; // stay under 255, u8::MAX
 const NUMBER_OF_OPTIONS: u8 = 4;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -112,15 +112,13 @@ fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
 
 fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
     let mut rng = rand::thread_rng();
-    let mut q_count = 0;
-    let mut correct_answer_count = 0;
+    let mut q_count: u8 = 0;
+    let mut correct_answer_count: u8 = 0;
     let mut done = false;
 
     while !done {
         let q_index = rng.gen_range(0, countries.len());
-        //println!("Got question index: {}", q_index);
         let selection = &countries[q_index];
-        //println!("Got country: {:#?}", selection);
         let mut options: Vec<&Country> = countries
             .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
             .collect();
@@ -137,14 +135,12 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             q_count, count, selection.alpha_2
         );
         println!("Options:");
-        //println!("Got options: {:#?}", options);
         for (pos, elem) in options.iter().enumerate() {
             println!("{}. {}", pos + 1, elem.name);
         }
         let mut input = String::new();
         let _result = io::stdin().read_line(&mut input);
         let input: u8 = input.trim().parse().unwrap_or(0);
-        //println!("Got answer: {:#?}", input);
         if input >= 1
             && input <= NUMBER_OF_OPTIONS
             && selection.name == options[input as usize - 1].name
