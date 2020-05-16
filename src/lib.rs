@@ -9,6 +9,7 @@ use std::io;
 use std::io::BufReader;
 use std::path::Path;
 use std::process;
+use std::time::Instant;
 
 const MAX_COUNT: u8 = 100; // stay under 255, u8::MAX
 const NUMBER_OF_OPTIONS: u8 = 4;
@@ -150,6 +151,7 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
     let mut correct_answer_count: u8 = 0;
     let mut done = false;
 
+    let start_time = Instant::now();
     while !done {
         let q_index = rng.gen_range(0, countries.len());
         let selection = &countries[q_index];
@@ -199,6 +201,11 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             done = true;
         }
     }
-    println!("Final score: {}/{}", correct_answer_count, count);
+    println!(
+        "Final score: {}/{} . Time: {}s",
+        correct_answer_count,
+        count,
+        start_time.elapsed().as_secs()
+    );
     Ok(())
 }
