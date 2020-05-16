@@ -157,7 +157,8 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
             .collect();
         // check if the options already has the selected answer
-        if options.contains(&selection) {
+        // or if question is empty
+        if options.contains(&selection) || selection.capital.is_empty() {
             // skip, retry with another question
             continue;
         }
@@ -165,8 +166,8 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
         options.shuffle(&mut rng);
         q_count += 1;
         println!(
-            "Question {}/{}: which country's code is {} ?",
-            q_count, count, selection.cca2
+            "Question {}/{}: which country's capital is {} ?",
+            q_count, count, selection.capital
         );
         println!("Options:");
         for (pos, elem) in options.iter().enumerate() {
