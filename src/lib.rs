@@ -14,24 +14,43 @@ const MAX_COUNT: u8 = 100; // stay under 255, u8::MAX
 const NUMBER_OF_OPTIONS: u8 = 4;
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Iso31661 {
-    #[serde(rename = "3166-1")]
-    countries: Vec<Country>,
+struct SourceCountry {
+    cca2: String,
+    cca3: String,
+    ccn3: String,
+    name: Name,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct Name {
+    common: String,
+    official: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Country {
-    alpha_2: String,
-    alpha_3: String,
-    name: String,
-    numeric: String,
-    #[serde(default)]
-    official_name: String,
+    cca2: String,
+    cca3: String,
+    ccn3: String,
+    name_common: String,
+    name_official: String,
+}
+
+impl From<SourceCountry> for Country {
+    fn from(source: SourceCountry) -> Country {
+        Country {
+            cca2: source.cca2,
+            cca3: source.cca3,
+            ccn3: source.ccn3,
+            name_common: source.name.common,
+            name_official: source.name.official,
+        }
+    }
 }
 
 impl PartialEq for Country {
     fn eq(&self, other: &Self) -> bool {
-        self.numeric == other.numeric
+        self.ccn3 == other.ccn3
     }
 }
 
@@ -57,23 +76,30 @@ pub fn is_valid_count(val: String) -> Result<(), String> {
 }
 
 pub fn generate_content(input_path: &str, output_path: &str) {
-    // read a json
+    // read source json
     let result = read_from_json_file(input_path);
-    let iso_3166_1 = result.unwrap();
+    let source_countries = result.unwrap();
+
+    // transform from source
+    let mut countries = Vec::new();
+    for source_country in source_countries {
+        let country = Country::from(source_country);
+        countries.push(country);
+    }
 
     // write to csv
-    let _result = write_to_csv_file(&iso_3166_1.countries, output_path);
+    let _result = write_to_csv_file(&countries, output_path);
     println!(
         "Generating content from {} into {}",
         input_path, output_path
     );
 }
 
-fn read_from_json_file(path: &str) -> Result<Iso31661, Box<dyn Error>> {
+fn read_from_json_file(path: &str) -> Result<Vec<SourceCountry>, Box<dyn Error>> {
     let file = File::open(Path::new(path))?;
     let buf_reader = BufReader::new(file);
-    let iso_3166_1 = serde_json::from_reader(buf_reader)?;
-    Ok(iso_3166_1)
+    let source_countries = serde_json::from_reader(buf_reader)?;
+    Ok(source_countries)
 }
 
 fn write_to_csv_file(countries: &[Country], path: &str) -> Result<(), Box<dyn Error>> {
@@ -132,28 +158,28 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
         q_count += 1;
         println!(
             "Question {}/{}: which country's code is {} ?",
-            q_count, count, selection.alpha_2
+            q_count, count, selection.cca2
         );
         println!("Options:");
         for (pos, elem) in options.iter().enumerate() {
-            println!("{}. {}", pos + 1, elem.name);
+            println!("{}. {}", pos + 1, elem.name_common);
         }
         let mut input = String::new();
         let _result = io::stdin().read_line(&mut input);
         let input: u8 = input.trim().parse().unwrap_or(0);
         if input >= 1
             && input <= NUMBER_OF_OPTIONS
-            && selection.name == options[input as usize - 1].name
+            && selection.name_common == options[input as usize - 1].name_common
         {
             println!(
                 "Your answer #{} is correct. Correct answer is {}",
-                input, selection.name
+                input, selection.name_common
             );
             correct_answer_count += 1;
         } else {
             println!(
                 "Your answer #{} is wrong. Correct answer is {}",
-                input, selection.name
+                input, selection.name_common
             );
         }
         if q_count == count {
