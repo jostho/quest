@@ -157,8 +157,12 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
             .collect();
         // check if the options already has the selected answer
-        // or if question is empty
-        if options.contains(&selection) || selection.capital.is_empty() {
+        if options.contains(&selection) {
+            // skip, retry with another question
+            continue;
+        }
+        // more checks before proceeding
+        if selection.capital.is_empty() || selection.capital.contains(&selection.name_common) {
             // skip, retry with another question
             continue;
         }
