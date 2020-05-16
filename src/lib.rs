@@ -50,7 +50,7 @@ impl From<SourceCountry> for Country {
             cca2: source.cca2,
             cca3: source.cca3,
             ccn3: source.ccn3,
-            capital: capital,
+            capital,
             name_common: source.name.common,
             name_official: source.name.official,
         }
