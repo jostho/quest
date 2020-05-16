@@ -19,6 +19,7 @@ struct SourceCountry {
     cca3: String,
     ccn3: String,
     name: Name,
+    capital: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -34,14 +35,21 @@ struct Country {
     ccn3: String,
     name_common: String,
     name_official: String,
+    capital: String,
 }
 
 impl From<SourceCountry> for Country {
     fn from(source: SourceCountry) -> Country {
+        let capital = if !source.capital.is_empty() {
+            source.capital[0].clone()
+        } else {
+            String::from("")
+        };
         Country {
             cca2: source.cca2,
             cca3: source.cca3,
             ccn3: source.ccn3,
+            capital: capital,
             name_common: source.name.common,
             name_official: source.name.official,
         }
