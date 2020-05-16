@@ -17,9 +17,13 @@ To build or run, use cargo
 
 ## Run
 
-Generate content
+Get `countries.json` from [here](https://github.com/mledoze/countries)
 
-    ./target/debug/quest -g -i /usr/share/iso-codes/json/iso_3166-1.json
+    curl -O https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.json
+
+Generate csv content
+
+    ./target/debug/quest -g -i countries.json
 
 Ask the quiz
 
