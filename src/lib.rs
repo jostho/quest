@@ -209,3 +209,29 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
     );
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn is_valid_count_for_1() {
+        let result = is_valid_count("1".to_string());
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), ());
+    }
+
+    #[test]
+    fn is_valid_count_for_100() {
+        let result = is_valid_count("100".to_string());
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "Value should be less than 100");
+    }
+
+    #[test]
+    fn is_valid_count_for_foo() {
+        let result = is_valid_count("foo".to_string());
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "invalid digit found in string");
+    }
+}
