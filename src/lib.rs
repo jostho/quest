@@ -1,3 +1,5 @@
+use ansi_term::Colour::Green;
+use ansi_term::Colour::Red;
 use csv::ReaderBuilder;
 use csv::WriterBuilder;
 use rand::seq::SliceRandom;
@@ -187,21 +189,18 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
         let mut input = String::new();
         let _result = io::stdin().read_line(&mut input);
         let input: u8 = input.trim().parse().unwrap_or(0);
+        let mut verdict = Red.paint("wrong");
         if input >= 1
             && input <= NUMBER_OF_OPTIONS
             && selection.name_common == options[input as usize - 1].name_common
         {
-            println!(
-                "Your answer #{} is correct. Correct answer is {}",
-                input, selection.name_common
-            );
             correct_answer_count += 1;
-        } else {
-            println!(
-                "Your answer #{} is wrong. Correct answer is {}",
-                input, selection.name_common
-            );
+            verdict = Green.paint("correct");
         }
+        println!(
+            "Your answer #{} is {}. Correct answer is {}",
+            input, verdict, selection.name_common
+        );
         if q_count == count {
             done = true;
         }
