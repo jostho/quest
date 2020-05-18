@@ -90,11 +90,7 @@ pub fn generate_content(input_path: &str, output_path: &str) {
     let source_countries = result.unwrap();
 
     // transform from source
-    let mut countries = Vec::new();
-    for source_country in source_countries {
-        let country = Country::from(source_country);
-        countries.push(country);
-    }
+    let countries = transform_from_source(source_countries);
 
     // write to csv
     let _result = write_to_csv_file(&countries, output_path);
@@ -109,6 +105,15 @@ fn read_from_json_file(path: &str) -> Result<Vec<SourceCountry>, Box<dyn Error>>
     let buf_reader = BufReader::new(file);
     let source_countries = serde_json::from_reader(buf_reader)?;
     Ok(source_countries)
+}
+
+fn transform_from_source(source_countries: Vec<SourceCountry>) -> Vec<Country> {
+    let mut countries = Vec::new();
+    for source_country in source_countries {
+        let country = Country::from(source_country);
+        countries.push(country);
+    }
+    countries
 }
 
 fn write_to_csv_file(countries: &[Country], path: &str) -> Result<(), Box<dyn Error>> {
@@ -233,5 +238,48 @@ mod tests {
         let result = is_valid_count("foo".to_string());
         assert!(result.is_err());
         assert_eq!(result.unwrap_err(), "invalid digit found in string");
+    }
+
+    #[test]
+    fn transform_from_source_for_2_countries() {
+        let abw_name: Name = Name {
+            common: String::from("Aruba"),
+            official: String::from("Aruba"),
+        };
+        let abw: SourceCountry = SourceCountry {
+            cca2: String::from("AW"),
+            cca3: String::from("ABW"),
+            ccn3: String::from("533"),
+            name: abw_name,
+            capital: vec![String::from("Oranjestad")],
+        };
+
+        let zaf_name: Name = Name {
+            common: String::from("South Africa"),
+            official: String::from("Republic of South Africa"),
+        };
+        let zaf: SourceCountry = SourceCountry {
+            cca2: String::from("ZA"),
+            cca3: String::from("ZAF"),
+            ccn3: String::from("710"),
+            name: zaf_name,
+            capital: vec![
+                String::from("Pretoria"),
+                String::from("Bloemfontein"),
+                String::from("Cape Town"),
+            ],
+        };
+
+        let mut source_countries = Vec::new();
+        source_countries.push(abw);
+        source_countries.push(zaf);
+
+        let countries = transform_from_source(source_countries);
+
+        assert_eq!(countries.len(), 2);
+        assert_eq!(countries[0].name_common, "Aruba");
+        assert_eq!(countries[0].ccn3, "533");
+        assert_eq!(countries[1].name_official, "Republic of South Africa");
+        assert_eq!(countries[1].capital, "Pretoria");
     }
 }
