@@ -1,5 +1,4 @@
-use ansi_term::Colour::Green;
-use ansi_term::Colour::Red;
+use ansi_term::Colour::{Green, Red};
 use csv::ReaderBuilder;
 use csv::WriterBuilder;
 use rand::seq::SliceRandom;
