@@ -154,6 +154,7 @@ fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
 
 fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
     let mut rng = rand::thread_rng();
+    let mut selections = Vec::new();
     let mut q_count: u8 = 0;
     let mut correct_answer_count: u8 = 0;
     let mut done = false;
@@ -166,18 +167,22 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
             .collect();
         // check if the options already has the selected answer
-        if options.contains(&selection) {
+        // check if question is already asked
+        if options.contains(&selection) || selections.contains(&selection) {
             // skip, retry with another question
             continue;
         }
-        // more checks before proceeding
+        // check if the capital is empty
+        // check if capital contains the name of country
         if selection.capital.is_empty() || selection.capital.contains(&selection.name_common) {
             // skip, retry with another question
             continue;
         }
+        // it's a GO
+        q_count += 1;
+        selections.push(selection);
         options.push(selection);
         options.shuffle(&mut rng);
-        q_count += 1;
         println!(
             "Question {}/{}: which country's capital is {} ?",
             q_count, count, selection.capital
