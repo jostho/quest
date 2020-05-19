@@ -172,8 +172,11 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             continue;
         }
         // check if the capital is empty
-        // check if capital contains the name of country
-        if selection.capital.is_empty() || selection.capital.contains(&selection.name_common) {
+        // check if capital matches the name of country
+        if selection.capital.is_empty()
+            || selection.capital.contains(&selection.name_common)
+            || selection.name_common.contains(&selection.capital)
+        {
             // skip, retry with another question
             continue;
         }
