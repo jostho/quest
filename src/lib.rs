@@ -128,13 +128,15 @@ fn write_to_csv_file(countries: &[Country], path: &str) -> Result<(), Box<dyn Er
 
 pub fn ask_quiz(input_path: &str, count: u8) {
     let result = read_from_csv_file(input_path);
-    let countries = result.unwrap();
+    let all_countries = result.unwrap();
+
+    let countries = validate_capital(all_countries);
 
     if countries.len() > count as usize && countries.len() > NUMBER_OF_OPTIONS as usize {
         println!("Asking quiz using {}", input_path);
         let _result = pop_quiz(&countries, count);
     } else {
-        eprintln!("Input file has fewer rows than number of questions/options");
+        eprintln!("Not enough questions in {}", input_path);
         process::exit(2);
     }
 }
@@ -149,6 +151,21 @@ fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
         countries.push(record);
     }
     Ok(countries)
+}
+
+fn validate_capital(countries: Vec<Country>) -> Vec<Country> {
+    let mut valid_countries = Vec::new();
+    for country in countries {
+        // check if the capital is empty
+        // check if capital matches the name of country
+        if !country.capital.is_empty()
+            && !country.capital.contains(&country.name_common)
+            && !country.name_common.contains(&country.capital)
+        {
+            valid_countries.push(country);
+        }
+    }
+    valid_countries
 }
 
 fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
@@ -168,15 +185,6 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
         // check if the options already has the selected answer
         // check if question is already asked
         if options.contains(&selection) || selections.contains(&selection) {
-            // skip, retry with another question
-            continue;
-        }
-        // check if the capital is empty
-        // check if capital matches the name of country
-        if selection.capital.is_empty()
-            || selection.capital.contains(&selection.name_common)
-            || selection.name_common.contains(&selection.capital)
-        {
             // skip, retry with another question
             continue;
         }
