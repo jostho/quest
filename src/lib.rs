@@ -234,6 +234,20 @@ mod tests {
     use super::*;
 
     #[test]
+    fn is_valid_file_for_readme() {
+        let result = is_valid_file("README.md".to_string());
+        assert!(result.is_ok());
+        assert_eq!(result.unwrap(), ());
+    }
+
+    #[test]
+    fn is_valid_file_for_does_not_exist() {
+        let result = is_valid_file("does_not_exist.txt".to_string());
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err(), "File does not exist");
+    }
+
+    #[test]
     fn is_valid_count_for_1() {
         let result = is_valid_count("1".to_string());
         assert!(result.is_ok());
