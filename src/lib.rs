@@ -256,23 +256,22 @@ mod tests {
 
     #[test]
     fn transform_from_source_for_2_countries() {
-        let abw_name: Name = Name {
+        let abw_name = Name {
             common: String::from("Aruba"),
             official: String::from("Aruba"),
         };
-        let abw: SourceCountry = SourceCountry {
+        let abw = SourceCountry {
             cca2: String::from("AW"),
             cca3: String::from("ABW"),
             ccn3: String::from("533"),
             name: abw_name,
             capital: vec![String::from("Oranjestad")],
         };
-
-        let zaf_name: Name = Name {
+        let zaf_name = Name {
             common: String::from("South Africa"),
             official: String::from("Republic of South Africa"),
         };
-        let zaf: SourceCountry = SourceCountry {
+        let zaf = SourceCountry {
             cca2: String::from("ZA"),
             cca3: String::from("ZAF"),
             ccn3: String::from("710"),
