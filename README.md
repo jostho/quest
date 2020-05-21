@@ -27,4 +27,4 @@ Generate csv content
 
 Ask the quiz
 
-    ./target/debug/quest -i output.csv
+    ./target/debug/quest -i countries.csv

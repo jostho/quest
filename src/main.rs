@@ -4,7 +4,7 @@ const ARG_COMMAND_GENERATE: &str = "generate";
 const ARG_INPUT: &str = "input";
 const ARG_OUTPUT: &str = "output";
 const ARG_COUNT: &str = "count";
-const DEFAULT_OUTPUT: &str = "output.csv";
+const DEFAULT_OUTPUT: &str = "countries.csv";
 const DEFAULT_COUNT: &str = "10";
 
 fn main() {
