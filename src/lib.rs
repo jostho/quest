@@ -320,7 +320,59 @@ mod tests {
     }
 
     #[test]
-    fn validate_countries_for_5() {
+    fn is_valid_capital_for_abw() {
+        let abw = Country {
+            cca2: String::from("AW"),
+            cca3: String::from("ABW"),
+            ccn3: String::from("533"),
+            name_common: String::from("Aruba"),
+            name_official: String::from("Aruba"),
+            capital: String::from("Oranjestad"),
+        };
+        assert!(abw.is_valid_capital());
+    }
+
+    #[test]
+    fn is_valid_capital_for_ata() {
+        let ata = Country {
+            cca2: String::from("AQ"),
+            cca3: String::from("ATA"),
+            ccn3: String::from("010"),
+            name_common: String::from("Antarctica"),
+            name_official: String::from("Antarctica"),
+            capital: String::from(""),
+        };
+        assert!(!ata.is_valid_capital());
+    }
+
+    #[test]
+    fn is_valid_capital_for_gnb() {
+        let gnb = Country {
+            cca2: String::from("GW"),
+            cca3: String::from("GNB"),
+            ccn3: String::from("624"),
+            name_common: String::from("Guinea-Bissau"),
+            name_official: String::from("Republic of Guinea-Bissau"),
+            capital: String::from("Bissau"),
+        };
+        assert!(!gnb.is_valid_capital());
+    }
+
+    #[test]
+    fn is_valid_capital_for_gtm() {
+        let gtm = Country {
+            cca2: String::from("GT"),
+            cca3: String::from("GTM"),
+            ccn3: String::from("320"),
+            name_common: String::from("Guatemala"),
+            name_official: String::from("Republic of Guatemala"),
+            capital: String::from("Guatemala City"),
+        };
+        assert!(!gtm.is_valid_capital());
+    }
+
+    #[test]
+    fn validate_countries_for_3_countries() {
         let abw = Country {
             cca2: String::from("AW"),
             cca3: String::from("ABW"),
@@ -337,22 +389,6 @@ mod tests {
             name_official: String::from("Antarctica"),
             capital: String::from(""),
         };
-        let gnb = Country {
-            cca2: String::from("GW"),
-            cca3: String::from("GNB"),
-            ccn3: String::from("624"),
-            name_common: String::from("Guinea-Bissau"),
-            name_official: String::from("Republic of Guinea-Bissau"),
-            capital: String::from("Bissau"),
-        };
-        let gtm = Country {
-            cca2: String::from("GT"),
-            cca3: String::from("GTM"),
-            ccn3: String::from("320"),
-            name_common: String::from("Guatemala"),
-            name_official: String::from("Republic of Guatemala"),
-            capital: String::from("Guatemala City"),
-        };
         let zwe = Country {
             cca2: String::from("ZW"),
             cca3: String::from("ZWE"),
@@ -365,8 +401,6 @@ mod tests {
         let mut all_countries = Vec::new();
         all_countries.push(abw);
         all_countries.push(ata);
-        all_countries.push(gnb);
-        all_countries.push(gtm);
         all_countries.push(zwe);
 
         let countries = validate_countries(all_countries);
