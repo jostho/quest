@@ -133,7 +133,11 @@ pub fn ask_quiz(input_path: &str, count: u8) {
     let countries = validate_capital(all_countries);
 
     if countries.len() > count as usize && countries.len() > NUMBER_OF_OPTIONS as usize {
-        println!("Asking quiz using {}", input_path);
+        println!(
+            "Asking quiz using {} (total: {})",
+            input_path,
+            countries.len()
+        );
         let _result = pop_quiz(&countries, count);
     } else {
         eprintln!("Not enough questions in {}", input_path);
