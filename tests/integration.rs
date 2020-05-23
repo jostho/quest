@@ -1,3 +1,4 @@
+use reqwest::blocking;
 use std::error::Error;
 use std::fs;
 use std::fs::File;
@@ -16,7 +17,8 @@ fn prepare_countries_json() -> Result<(), Box<dyn Error>> {
     }
     // get from the remote location
     if !Path::new(COUNTRIES_JSON).exists() {
-        let body = reqwest::blocking::get(COUNTRIES_JSON_REMOTE)?.text()?;
+        println!("Getting {} from remote", COUNTRIES_JSON);
+        let body = blocking::get(COUNTRIES_JSON_REMOTE)?.text()?;
         let _result = fs::write(COUNTRIES_JSON, body);
     }
     Ok(())
@@ -29,6 +31,7 @@ fn get_line_count(path: &str) -> Result<usize, Box<dyn Error>> {
 }
 
 #[test]
+#[ignore]
 fn generate_content_for_countries_json() {
     let _result = prepare_countries_json();
     quest::generate_content(COUNTRIES_JSON, COUNTRIES_CSV);
