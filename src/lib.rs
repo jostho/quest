@@ -40,6 +40,16 @@ struct Country {
     capital: String,
 }
 
+impl Country {
+    fn is_valid_capital(&self) -> bool {
+        // check if the capital is empty
+        // check if capital matches the name of country
+        !self.capital.is_empty()
+            && !self.capital.contains(&self.name_common)
+            && !self.name_common.contains(&self.capital)
+    }
+}
+
 impl From<SourceCountry> for Country {
     fn from(source: SourceCountry) -> Country {
         let capital = if !source.capital.is_empty() {
@@ -130,7 +140,7 @@ pub fn ask_quiz(input_path: &str, count: u8) {
     let result = read_from_csv_file(input_path);
     let all_countries = result.unwrap();
 
-    let countries = validate_capital(all_countries);
+    let countries = validate_countries(all_countries);
 
     if countries.len() > count as usize && countries.len() > NUMBER_OF_OPTIONS as usize {
         println!(
@@ -157,15 +167,10 @@ fn read_from_csv_file(path: &str) -> Result<Vec<Country>, Box<dyn Error>> {
     Ok(countries)
 }
 
-fn validate_capital(countries: Vec<Country>) -> Vec<Country> {
+fn validate_countries(countries: Vec<Country>) -> Vec<Country> {
     let mut valid_countries = Vec::new();
     for country in countries {
-        // check if the capital is empty
-        // check if capital matches the name of country
-        if !country.capital.is_empty()
-            && !country.capital.contains(&country.name_common)
-            && !country.name_common.contains(&country.capital)
-        {
+        if country.is_valid_capital() {
             valid_countries.push(country);
         }
     }
@@ -315,7 +320,7 @@ mod tests {
     }
 
     #[test]
-    fn validate_capital_for_5_countries() {
+    fn validate_countries_for_5() {
         let abw = Country {
             cca2: String::from("AW"),
             cca3: String::from("ABW"),
@@ -364,7 +369,7 @@ mod tests {
         all_countries.push(gtm);
         all_countries.push(zwe);
 
-        let countries = validate_capital(all_countries);
+        let countries = validate_countries(all_countries);
 
         assert_eq!(countries.len(), 2);
         assert_eq!(countries[0].capital, "Oranjestad");
