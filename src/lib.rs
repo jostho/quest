@@ -150,7 +150,11 @@ pub fn ask_quiz(input_path: &str, count: u8) {
         );
         let _result = pop_quiz(&countries, count);
     } else {
-        eprintln!("Not enough questions in {}", input_path);
+        eprintln!(
+            "Not enough questions in {} (total: {})",
+            input_path,
+            countries.len()
+        );
         process::exit(2);
     }
 }
@@ -343,6 +347,19 @@ mod tests {
             capital: String::from(""),
         };
         assert!(!ata.is_valid_capital());
+    }
+
+    #[test]
+    fn is_valid_capital_for_gib() {
+        let gib = Country {
+            cca2: String::from("GI"),
+            cca3: String::from("GIB"),
+            ccn3: String::from("292"),
+            name_common: String::from("Gibraltar"),
+            name_official: String::from("Gibraltar"),
+            capital: String::from("Gibraltar"),
+        };
+        assert!(!gib.is_valid_capital());
     }
 
     #[test]
