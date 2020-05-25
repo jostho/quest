@@ -83,13 +83,11 @@ pub fn is_valid_file(val: String) -> Result<(), String> {
 }
 
 pub fn get_output_path(input_path: &str) -> String {
-    let stem = Path::new(&input_path)
-        .file_stem()
-        .unwrap()
-        .to_os_string()
+    Path::new(&input_path)
+        .with_extension("csv")
+        .into_os_string()
         .into_string()
-        .unwrap();
-    format!("{}.csv", stem)
+        .unwrap()
 }
 
 pub fn is_valid_count(val: String) -> Result<(), String> {
@@ -277,9 +275,15 @@ mod tests {
     }
 
     #[test]
-    fn get_output_path_for_input_json() {
-        let output = get_output_path("input.json");
+    fn get_output_path_for_file_with_no_extension() {
+        let output = get_output_path("input");
         assert_eq!(output, "input.csv");
+    }
+
+    #[test]
+    fn get_output_path_for_file_in_sub_directory() {
+        let output = get_output_path("target/countries.json");
+        assert_eq!(output, "target/countries.csv");
     }
 
     #[test]
