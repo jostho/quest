@@ -4,7 +4,6 @@ const ARG_COMMAND_GENERATE: &str = "generate";
 const ARG_INPUT: &str = "input";
 const ARG_OUTPUT: &str = "output";
 const ARG_COUNT: &str = "count";
-const DEFAULT_OUTPUT: &str = "countries.csv";
 const DEFAULT_COUNT: &str = "10";
 
 fn main() {
@@ -33,8 +32,7 @@ fn main() {
                 .short("o")
                 .long(ARG_OUTPUT)
                 .help("Output file path")
-                .takes_value(true)
-                .default_value(DEFAULT_OUTPUT),
+                .takes_value(true),
         )
         .arg(
             Arg::with_name(ARG_COUNT)
@@ -46,18 +44,19 @@ fn main() {
         )
         .get_matches();
 
+    let input_path = args.value_of(ARG_INPUT).unwrap();
     if args.is_present(ARG_COMMAND_GENERATE) {
+        let default_output_path = quest::get_output_path(&input_path);
+        let output_path = args.value_of(ARG_OUTPUT).unwrap_or(&default_output_path);
+
         // generate content for quiz
-        quest::generate_content(
-            args.value_of(ARG_INPUT).unwrap(),
-            args.value_of(ARG_OUTPUT).unwrap(),
-        );
+        quest::generate_content(input_path, output_path);
     } else {
         // number of questions
         let count = args.value_of(ARG_COUNT).unwrap();
         let count = count.parse().unwrap();
 
         // ask a quiz
-        quest::ask_quiz(args.value_of(ARG_INPUT).unwrap(), count);
+        quest::ask_quiz(input_path, count);
     }
 }
