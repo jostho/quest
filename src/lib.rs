@@ -271,6 +271,18 @@ mod tests {
     }
 
     #[test]
+    fn get_output_path_for_countries_json() {
+        let output = get_output_path("countries.json");
+        assert_eq!(output, "countries.csv");
+    }
+
+    #[test]
+    fn get_output_path_for_input_json() {
+        let output = get_output_path("input.json");
+        assert_eq!(output, "input.csv");
+    }
+
+    #[test]
     fn is_valid_count_for_1() {
         let result = is_valid_count("1".to_string());
         assert!(result.is_ok());
