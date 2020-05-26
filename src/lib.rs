@@ -85,9 +85,9 @@ pub fn is_valid_file(val: String) -> Result<(), String> {
 pub fn get_output_path(input_path: &str) -> String {
     Path::new(&input_path)
         .with_extension("csv")
-        .into_os_string()
-        .into_string()
+        .to_str()
         .unwrap()
+        .to_string()
 }
 
 pub fn is_valid_count(val: String) -> Result<(), String> {
@@ -269,7 +269,7 @@ mod tests {
     }
 
     #[test]
-    fn get_output_path_for_countries_json() {
+    fn get_output_path_for_default_file() {
         let output = get_output_path("countries.json");
         assert_eq!(output, "countries.csv");
     }
@@ -281,9 +281,15 @@ mod tests {
     }
 
     #[test]
-    fn get_output_path_for_file_in_sub_directory() {
+    fn get_output_path_for_file_with_relative_path() {
         let output = get_output_path("target/countries.json");
         assert_eq!(output, "target/countries.csv");
+    }
+
+    #[test]
+    fn get_output_path_for_file_with_absolute_path() {
+        let output = get_output_path("/tmp/quest/countries.json");
+        assert_eq!(output, "/tmp/quest/countries.csv");
     }
 
     #[test]
