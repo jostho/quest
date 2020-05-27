@@ -7,19 +7,17 @@ use std::path::Path;
 
 const COUNTRIES_JSON_REMOTE: &str =
     "https://raw.githubusercontent.com/mledoze/countries/master/dist/countries.json";
-const COUNTRIES_JSON: &str = "target/countries.json";
-const COUNTRIES_CSV: &str = "target/countries.csv";
 
-fn prepare_countries_json() -> Result<(), Box<dyn Error>> {
+fn prepare_countries_json(input_path: &str, output_path: &str) -> Result<(), Box<dyn Error>> {
     // clean up first
-    if Path::new(COUNTRIES_CSV).exists() {
-        fs::remove_file(COUNTRIES_CSV)?;
+    if Path::new(output_path).exists() {
+        fs::remove_file(output_path)?;
     }
     // get from the remote location
-    if !Path::new(COUNTRIES_JSON).exists() {
-        println!("Getting {} from remote", COUNTRIES_JSON);
+    if !Path::new(input_path).exists() {
+        println!("Getting countries.json from remote");
         let body = blocking::get(COUNTRIES_JSON_REMOTE)?.text()?;
-        let _result = fs::write(COUNTRIES_JSON, body);
+        let _result = fs::write(input_path, body);
     }
     Ok(())
 }
@@ -32,15 +30,18 @@ fn get_line_count(path: &str) -> Result<usize, Box<dyn Error>> {
 
 #[test]
 #[ignore]
-fn generate_content_for_countries_json() {
-    let _result = prepare_countries_json();
-    quest::generate_content(COUNTRIES_JSON, COUNTRIES_CSV);
+fn generate_content_for_remote_countries_json() {
+    let countries_json = "target/countries.json";
+    let countries_csv = "target/countries.csv";
 
-    assert!(Path::new(COUNTRIES_JSON).exists());
-    assert!(Path::new(COUNTRIES_CSV).exists());
+    let _result = prepare_countries_json(&countries_json, &countries_csv);
+    quest::generate_content(&countries_json, &countries_csv);
 
-    let lc_json = get_line_count(COUNTRIES_JSON).unwrap();
-    let lc_csv = get_line_count(COUNTRIES_CSV).unwrap();
+    assert!(Path::new(&countries_json).exists());
+    assert!(Path::new(&countries_csv).exists());
+
+    let lc_json = get_line_count(&countries_json).unwrap();
+    let lc_csv = get_line_count(&countries_csv).unwrap();
     // csv file has extra line - for header
     assert_eq!(lc_json, lc_csv - 1);
 }
