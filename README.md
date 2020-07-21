@@ -1,5 +1,7 @@
 # Quest
 
+![CI](https://github.com/jostho/quest/workflows/CI/badge.svg)
+
 This is an quiz program written in rust.
 
 ## Environment
