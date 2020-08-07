@@ -16,6 +16,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Checkout country-flags repo
+      uses: actions/checkout@v2
+      with:
+        repository: mledoze/countries
+        path: target/countries
     - name: Print version
       run: rustc --version --verbose && cargo --version
     - name: Check fmt

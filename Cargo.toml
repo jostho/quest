@@ -16,6 +16,3 @@ csv = "1.1"
 clap = "2.33"
 rand = "0.7"
 ansi_term = "0.12"
-
-[dev-dependencies]
-reqwest = { version = "0.10", features = ["blocking"] }
