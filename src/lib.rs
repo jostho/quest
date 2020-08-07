@@ -1,4 +1,4 @@
-use ansi_term::Colour::{Green, Red};
+use ansi_term::Colour::{Cyan, Green, Red};
 use csv::ReaderBuilder;
 use csv::WriterBuilder;
 use rand::seq::SliceRandom;
@@ -151,11 +151,12 @@ pub fn ask_quiz(input_path: &str, count: u8) {
     let countries = validate_countries(all_countries);
 
     if countries.len() > count as usize && countries.len() > NUMBER_OF_OPTIONS as usize {
-        println!(
+        let header = format!(
             "Asking quiz using {} (total: {})",
             input_path,
             countries.len()
         );
+        println!("{}", Cyan.paint(header));
         let _result = pop_quiz(&countries, count);
     } else {
         eprintln!(
@@ -241,12 +242,13 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
             done = true;
         }
     }
-    println!(
+    let footer = format!(
         "Final score: {}/{} . Time: {}s",
         correct_answer_count,
         count,
         start_time.elapsed().as_secs()
     );
+    println!("{}", Cyan.paint(footer));
     Ok(())
 }
 
