@@ -75,10 +75,10 @@ impl PartialEq for Country {
 }
 
 pub fn is_valid_file(val: String) -> Result<(), String> {
-    if Path::new(&val).exists() {
+    if Path::new(&val).is_file() {
         Ok(())
     } else {
-        Err("File does not exist".to_string())
+        Err("file does not exist".to_string())
     }
 }
 
@@ -267,7 +267,7 @@ mod tests {
     fn is_valid_file_for_does_not_exist() {
         let result = is_valid_file("does_not_exist.txt".to_string());
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "File does not exist");
+        assert_eq!(result.unwrap_err(), "file does not exist");
     }
 
     #[test]
