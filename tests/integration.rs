@@ -10,11 +10,11 @@ const COUNTRIES_JSON_REMOTE: &str =
 
 fn prepare_countries_json(input_path: &str, output_path: &str) -> Result<(), Box<dyn Error>> {
     // clean up first
-    if Path::new(output_path).exists() {
+    if Path::new(output_path).is_file() {
         fs::remove_file(output_path)?;
     }
     // get from the remote location
-    if !Path::new(input_path).exists() {
+    if !Path::new(input_path).is_file() {
         println!("Getting countries.json from remote");
         let body = blocking::get(COUNTRIES_JSON_REMOTE)?.text()?;
         let _result = fs::write(input_path, body);
@@ -37,8 +37,8 @@ fn generate_content_for_remote_countries_json() {
     let _result = prepare_countries_json(&countries_json, &countries_csv);
     quest::generate_content(&countries_json, &countries_csv);
 
-    assert!(Path::new(&countries_json).exists());
-    assert!(Path::new(&countries_csv).exists());
+    assert!(Path::new(&countries_json).is_file());
+    assert!(Path::new(&countries_csv).is_file());
 
     let lc_json = get_line_count(&countries_json).unwrap();
     let lc_csv = get_line_count(&countries_csv).unwrap();
