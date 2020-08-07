@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Checkout country-flags repo
+    - name: Checkout countries repo
       uses: actions/checkout@v2
       with:
         repository: mledoze/countries
