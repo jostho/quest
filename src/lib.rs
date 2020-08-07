@@ -99,7 +99,7 @@ pub fn is_valid_count(val: String) -> Result<(), String> {
     if count < MAX_COUNT {
         Ok(())
     } else {
-        Err(format!("Value should be less than {}", MAX_COUNT))
+        Err(format!("value should be less than {}", MAX_COUNT))
     }
 }
 
@@ -305,7 +305,7 @@ mod tests {
     fn is_valid_count_for_100() {
         let result = is_valid_count("100".to_string());
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "Value should be less than 100");
+        assert_eq!(result.unwrap_err(), "value should be less than 100");
     }
 
     #[test]
