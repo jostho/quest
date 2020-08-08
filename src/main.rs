@@ -1,6 +1,7 @@
 use clap::{App, Arg};
 
 const ARG_COMMAND_GENERATE: &str = "generate";
+const ARG_COMMAND_LIST: &str = "list";
 const ARG_INPUT: &str = "input";
 const ARG_OUTPUT: &str = "output";
 const ARG_COUNT: &str = "count";
@@ -14,7 +15,15 @@ fn main() {
             Arg::with_name(ARG_COMMAND_GENERATE)
                 .short("g")
                 .long(ARG_COMMAND_GENERATE)
-                .help("Generate a csv")
+                .help("Generate csv")
+                .takes_value(false)
+                .required(false),
+        )
+        .arg(
+            Arg::with_name(ARG_COMMAND_LIST)
+                .short("l")
+                .long(ARG_COMMAND_LIST)
+                .help("List csv")
                 .takes_value(false)
                 .required(false),
         )
@@ -45,12 +54,16 @@ fn main() {
         .get_matches();
 
     let input_path = args.value_of(ARG_INPUT).unwrap();
+
     if args.is_present(ARG_COMMAND_GENERATE) {
         let default_output_path = quest::get_output_path(&input_path);
         let output_path = args.value_of(ARG_OUTPUT).unwrap_or(&default_output_path);
 
         // generate content for quiz
         quest::generate_content(input_path, output_path);
+    } else if args.is_present(ARG_COMMAND_LIST) {
+        // list content
+        quest::get_content(input_path, true);
     } else {
         // number of questions
         let count = args.value_of(ARG_COUNT).unwrap();

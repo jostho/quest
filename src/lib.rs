@@ -31,7 +31,7 @@ struct Name {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct Country {
+pub struct Country {
     cca2: String,
     cca3: String,
     ccn3: String,
@@ -145,10 +145,7 @@ fn write_to_csv_file(countries: &[Country], path: &str) -> Result<(), Box<dyn Er
 }
 
 pub fn ask_quiz(input_path: &str, count: u8) {
-    let result = read_from_csv_file(input_path);
-    let all_countries = result.unwrap();
-
-    let countries = validate_countries(all_countries);
+    let countries = get_content(input_path, false);
 
     if countries.len() > count as usize && countries.len() > NUMBER_OF_OPTIONS as usize {
         let header = format!(
@@ -188,6 +185,16 @@ fn validate_countries(countries: Vec<Country>) -> Vec<Country> {
         }
     }
     valid_countries
+}
+
+pub fn get_content(input_path: &str, verbose: bool) -> Vec<Country> {
+    let result = read_from_csv_file(input_path);
+    let all_countries = result.unwrap();
+    let countries = validate_countries(all_countries);
+    if verbose {
+        println!("{:?}", countries);
+    }
+    countries
 }
 
 fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
