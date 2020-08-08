@@ -2,13 +2,12 @@
 
 ![CI](https://github.com/jostho/quest/workflows/CI/badge.svg)
 
-This is an quiz program written in rust.
+This is a capital quiz program written in rust.
 
 ## Environment
 
 * fedora 32
 * rust 1.43
-* make 4.2
 
 ## Build
 
