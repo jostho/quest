@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
+// tests expects "countries" sources at "target/countries"
 const COUNTRIES_JSON: &str = "target/countries/dist/countries.json";
 
 fn get_line_count(path: &str) -> Result<usize, Box<dyn Error>> {
@@ -13,7 +14,7 @@ fn get_line_count(path: &str) -> Result<usize, Box<dyn Error>> {
 
 #[test]
 #[ignore]
-fn generate_content_for_remote_countries_json() {
+fn generate_content_for_countries_json() {
     let countries_csv = "target/countries-1.csv";
     quest::generate_content(&COUNTRIES_JSON, &countries_csv);
     assert!(Path::new(&countries_csv).is_file());
