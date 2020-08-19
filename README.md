@@ -11,10 +11,9 @@ This is a capital quiz program written in rust.
 
 ## Build
 
-To build or run, use cargo
+To build, use `cargo`
 
     cargo build
-    cargo run
 
 ## Run
 
