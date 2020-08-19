@@ -309,15 +309,18 @@ mod tests {
     }
 
     #[test]
-    fn is_valid_count_for_100() {
-        let result = is_valid_count("100".to_string());
+    fn is_valid_count_for_max_count() {
+        let result = is_valid_count(MAX_COUNT.to_string());
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "value should be less than 100");
+        assert_eq!(
+            result.unwrap_err(),
+            format!("value should be less than {}", MAX_COUNT)
+        );
     }
 
     #[test]
-    fn is_valid_count_for_foo() {
-        let result = is_valid_count("foo".to_string());
+    fn is_valid_count_for_string() {
+        let result = is_valid_count("str".to_string());
         assert!(result.is_err());
         assert_eq!(result.unwrap_err(), "invalid digit found in string");
     }
