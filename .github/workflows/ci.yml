@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 env:
   CARGO_TERM_COLOR: always
@@ -15,19 +15,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Checkout countries repo
-      uses: actions/checkout@v2
-      with:
-        repository: mledoze/countries
-        path: target/countries
-    - name: Print version
-      run: rustc --version --verbose && cargo --version
-    - name: Check fmt
-      run: cargo fmt -- --check
-    - name: Build
-      run: cargo build
-    - name: Run tests
-      run: cargo test
-    - name: Run ignored tests
-      run: cargo test -- --ignored
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Checkout countries repo
+        uses: actions/checkout@v2
+        with:
+          repository: mledoze/countries
+          path: target/countries
+      - name: Print version
+        run: rustc --version --verbose && cargo --version
+      - name: Check fmt
+        run: cargo fmt -- --check
+      - name: Build
+        run: cargo build
+      - name: Run tests
+        run: cargo test
+      - name: Run ignored tests
+        run: cargo test -- --ignored
