@@ -234,8 +234,7 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
         let _result = io::stdin().read_line(&mut input);
         let input: u8 = input.trim().parse().unwrap_or(0);
         let mut verdict = Red.paint("wrong");
-        if input >= 1
-            && input <= NUMBER_OF_OPTIONS
+        if (1..=NUMBER_OF_OPTIONS).contains(&input)
             && selection.name_common == options[input as usize - 1].name_common
         {
             correct_answer_count += 1;
