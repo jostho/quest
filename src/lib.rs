@@ -12,7 +12,6 @@ use std::path::Path;
 use std::process;
 use std::time::Instant;
 
-const MAX_COUNT: u8 = 100; // stay under 255, u8::MAX
 const NUMBER_OF_OPTIONS: u8 = 4;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -74,7 +73,7 @@ impl PartialEq for Country {
     }
 }
 
-pub fn is_valid_file(val: String) -> Result<(), String> {
+pub fn is_valid_file(val: &str) -> Result<(), String> {
     if Path::new(&val).is_file() {
         Ok(())
     } else {
@@ -88,19 +87,6 @@ pub fn get_output_path(input_path: &str) -> String {
         .to_str()
         .unwrap()
         .to_string()
-}
-
-pub fn is_valid_count(val: String) -> Result<(), String> {
-    let count: u8 = match val.parse() {
-        Ok(count) => count,
-        Err(e) => return Err(e.to_string()),
-    };
-
-    if count < MAX_COUNT {
-        Ok(())
-    } else {
-        Err(format!("value should be less than {}", MAX_COUNT))
-    }
 }
 
 pub fn generate_content(input_path: &str, output_path: &str) {
@@ -206,7 +192,7 @@ fn pop_quiz(countries: &[Country], count: u8) -> Result<(), Box<dyn Error>> {
 
     let start_time = Instant::now();
     while !done {
-        let q_index = rng.gen_range(0, countries.len());
+        let q_index = rng.gen_range(0..countries.len());
         let selection = &countries[q_index];
         let mut options: Vec<&Country> = countries
             .choose_multiple(&mut rng, NUMBER_OF_OPTIONS as usize - 1)
@@ -264,14 +250,14 @@ mod tests {
 
     #[test]
     fn is_valid_file_for_readme() {
-        let result = is_valid_file("README.md".to_string());
+        let result = is_valid_file("README.md");
         assert!(result.is_ok());
         assert_eq!(result.unwrap(), ());
     }
 
     #[test]
     fn is_valid_file_for_does_not_exist() {
-        let result = is_valid_file("does_not_exist.txt".to_string());
+        let result = is_valid_file("does_not_exist.txt");
         assert!(result.is_err());
         assert_eq!(result.unwrap_err(), "file does not exist");
     }
@@ -298,30 +284,6 @@ mod tests {
     fn get_output_path_for_file_with_absolute_path() {
         let output = get_output_path("/tmp/quest/countries.json");
         assert_eq!(output, "/tmp/quest/countries.csv");
-    }
-
-    #[test]
-    fn is_valid_count_for_1() {
-        let result = is_valid_count("1".to_string());
-        assert!(result.is_ok());
-        assert_eq!(result.unwrap(), ());
-    }
-
-    #[test]
-    fn is_valid_count_for_max_count() {
-        let result = is_valid_count(MAX_COUNT.to_string());
-        assert!(result.is_err());
-        assert_eq!(
-            result.unwrap_err(),
-            format!("value should be less than {}", MAX_COUNT)
-        );
-    }
-
-    #[test]
-    fn is_valid_count_for_string() {
-        let result = is_valid_count("str".to_string());
-        assert!(result.is_err());
-        assert_eq!(result.unwrap_err(), "invalid digit found in string");
     }
 
     #[test]
