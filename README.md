@@ -6,8 +6,8 @@ This is a capital quiz program written in rust.
 
 ## Environment
 
-* fedora 34
-* rust 1.52
+* fedora 36
+* rust 1.61
 
 ## Build
 
